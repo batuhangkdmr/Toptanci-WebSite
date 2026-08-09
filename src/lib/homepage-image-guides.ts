@@ -9,7 +9,7 @@ const HOMEPAGE_IMAGE_GUIDES: Partial<
   Record<HomepageSectionType, HomepageImageGuide>
 > = {
   CATEGORY_STRIP: {
-    desktop: { width: 800, height: 800, label: "Kare kategori görseli" },
+    desktop: { width: 1000, height: 430, label: "Carousel 1 yatay banner" },
   },
   HERO_BANNER: {
     desktop: { width: 1680, height: 720, label: "Masaüstü ana banner" },
