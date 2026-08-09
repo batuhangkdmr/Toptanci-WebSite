@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { LoaderCircle, LockKeyhole, Minus, Plus, ShoppingCart } from "lucide-react";
-import { ProductPrimaryImage } from "@/components/products/product-primary-image";
+import { ProductImageCarousel } from "@/components/products/product-image-carousel";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
 import { cn } from "@/lib/utils";
@@ -54,13 +54,11 @@ export function ProductCard({
         variant === "featured" && "border-[var(--teal)]/15",
       )}
     >
-      <Link
-        href={`/urunler/${product.slug}`}
-        aria-label={`${product.name} ürününü görüntüle`}
-        tabIndex={-1}
-      >
-        <ProductPrimaryImage images={product.images} productName={product.name} />
-      </Link>
+      <ProductImageCarousel
+        images={product.images}
+        productName={product.name}
+        size="card"
+      />
 
       <div className="flex flex-1 flex-col p-2 lg:p-5">
         <div className="space-y-1 lg:space-y-2">

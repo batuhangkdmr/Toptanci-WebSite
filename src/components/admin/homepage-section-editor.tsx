@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { getOptimizedImageUrl } from "@/lib/cloudinary/url";
+import { getHomepageImageGuide } from "@/lib/homepage-image-guides";
 import { compressImageForUpload } from "@/lib/images/client-compress";
 import type { Category, ProductWithImages } from "@/types";
 import type {
@@ -208,6 +209,10 @@ export function HomepageSectionEditor({
     null,
   );
   const [productSearch, setProductSearch] = useState("");
+  const imageGuide = getHomepageImageGuide(section.sectionType);
+  const supportsMobileImage =
+    section.sectionType === "HERO_BANNER" ||
+    section.sectionType === "SIDE_BANNER";
 
   const sortedItems = useMemo(
     () => [...items].sort((a, b) => a.sortOrder - b.sortOrder),
@@ -311,7 +316,6 @@ export function HomepageSectionEditor({
   function buildItemPayload() {
     const isCategoryStrip = section.sectionType === "CATEGORY_STRIP";
     const isHero = section.sectionType === "HERO_BANNER";
-    const isSide = section.sectionType === "SIDE_BANNER";
 
     if (isCategoryStrip && !itemForm.categoryId) {
       throw new Error("Kategori şeridi için kategori seçimi zorunludur.");
@@ -329,10 +333,12 @@ export function HomepageSectionEditor({
       endsAt: dates.endsAt,
       cloudinaryPublicId: emptyToNull(itemForm.cloudinaryPublicId),
       secureUrl: emptyToNull(itemForm.secureUrl),
-      mobileCloudinaryPublicId: isSide
+      mobileCloudinaryPublicId: supportsMobileImage
         ? emptyToNull(itemForm.mobileCloudinaryPublicId)
         : null,
-      mobileSecureUrl: isSide ? emptyToNull(itemForm.mobileSecureUrl) : null,
+      mobileSecureUrl: supportsMobileImage
+        ? emptyToNull(itemForm.mobileSecureUrl)
+        : null,
     };
 
     if (isHero) {
@@ -736,7 +742,20 @@ export function HomepageSectionEditor({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="itemImage">Görsel</Label>
+              <Label htmlFor="itemImage">
+                Masaüstü görseli
+                {imageGuide && (
+                  <span className="ml-2 font-normal text-[var(--primary)]">
+                    {imageGuide.desktop.width} × {imageGuide.desktop.height} px
+                  </span>
+                )}
+              </Label>
+              {imageGuide && (
+                <p className="text-xs leading-5 text-[var(--muted-foreground)]">
+                  Önerilen ölçü: {imageGuide.desktop.label}. Tüm öğeleri aynı
+                  ölçü ve oranda hazırlayın.
+                </p>
+              )}
               <Input
                 id="itemImage"
                 type="file"
@@ -765,9 +784,22 @@ export function HomepageSectionEditor({
               )}
             </div>
 
-            {section.sectionType === "SIDE_BANNER" && (
+            {supportsMobileImage && (
               <div className="space-y-2">
-                <Label htmlFor="itemMobileImage">Mobil görsel (opsiyonel)</Label>
+                <Label htmlFor="itemMobileImage">
+                  Mobil görsel (opsiyonel)
+                  {imageGuide?.mobile && (
+                    <span className="ml-2 font-normal text-[var(--primary)]">
+                      {imageGuide.mobile.width} × {imageGuide.mobile.height} px
+                    </span>
+                  )}
+                </Label>
+                {imageGuide?.mobile && (
+                  <p className="text-xs leading-5 text-[var(--muted-foreground)]">
+                    Önerilen ölçü: {imageGuide.mobile.label}. Mobil görsel
+                    eklenmezse masaüstü görseli kullanılır.
+                  </p>
+                )}
                 <Input
                   id="itemMobileImage"
                   type="file"

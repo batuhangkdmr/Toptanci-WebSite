@@ -2,10 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
 import { CatalogHeader } from "@/components/shared/catalog-header";
-import {
-  BannerCarousel,
-  CategoryStripCarousel,
-} from "@/components/homepage/carousels";
+import { BannerCarousel } from "@/components/homepage/carousels";
 import { ProductRailCarousel } from "@/components/homepage/product-rail";
 import { ProductCard } from "@/components/products/product-card";
 import { Pagination } from "@/components/shared/pagination";
@@ -133,10 +130,17 @@ export default async function HomePage({ searchParams }: PageProps) {
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:flex lg:h-full lg:flex-col lg:gap-4">
                 {strip && strip.carouselItems.length > 0 ? (
                   <div className="min-h-[11rem] flex-1 sm:min-h-[12rem] lg:min-h-0">
-                    <CategoryStripCarousel
+                    <BannerCarousel
                       items={strip.carouselItems}
-                      variant="compact"
+                      linked
+                      fillHeight
                       className="h-full"
+                      autoplayDelayMs={
+                        HOMEPAGE_CAROUSEL_TIMINGS.categoryStrip.autoplayDelayMs
+                      }
+                      autoplayStartDelayMs={
+                        HOMEPAGE_CAROUSEL_TIMINGS.categoryStrip.startDelayMs
+                      }
                     />
                   </div>
                 ) : null}
