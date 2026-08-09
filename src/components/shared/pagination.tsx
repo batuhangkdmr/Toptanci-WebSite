@@ -42,22 +42,25 @@ export function Pagination({
 
   return (
     <nav
-      className={cn("flex items-center justify-center gap-2", className)}
+      className={cn(
+        "flex items-center justify-center gap-1.5 sm:gap-2",
+        className,
+      )}
       aria-label="Sayfalama"
     >
       <Link
         href={buildHref(basePath, Math.max(1, page - 1), searchParams, hash)}
         aria-disabled={page <= 1}
         className={cn(
-          "inline-flex h-9 items-center gap-1 rounded-md border border-[var(--border)] bg-white px-3 text-sm",
+          "inline-flex h-9 items-center gap-1 rounded-lg border border-[var(--border)] bg-white px-2.5 text-xs font-semibold sm:px-3 sm:text-sm",
           page <= 1 && "pointer-events-none opacity-40",
         )}
       >
         <ChevronLeft className="h-4 w-4" />
-        Önceki
+        <span className="hidden min-[360px]:inline">Önceki</span>
       </Link>
 
-      <span className="px-3 text-sm text-[var(--muted-foreground)]">
+      <span className="min-w-20 px-2 text-center text-xs font-semibold text-[var(--muted-foreground)] sm:px-3 sm:text-sm">
         {page} / {totalPages}
       </span>
 
@@ -65,11 +68,11 @@ export function Pagination({
         href={buildHref(basePath, Math.min(totalPages, page + 1), searchParams, hash)}
         aria-disabled={page >= totalPages}
         className={cn(
-          "inline-flex h-9 items-center gap-1 rounded-md border border-[var(--border)] bg-white px-3 text-sm",
+          "inline-flex h-9 items-center gap-1 rounded-lg border border-[var(--border)] bg-white px-2.5 text-xs font-semibold sm:px-3 sm:text-sm",
           page >= totalPages && "pointer-events-none opacity-40",
         )}
       >
-        Sonraki
+        <span className="hidden min-[360px]:inline">Sonraki</span>
         <ChevronRight className="h-4 w-4" />
       </Link>
     </nav>
