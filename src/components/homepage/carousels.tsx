@@ -283,18 +283,18 @@ export function BannerCarousel({
           <button
             type="button"
             onClick={scrollPrev}
-            className="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-xl border border-white/50 bg-[var(--navy)]/70 text-white shadow-[var(--shadow-floating)] backdrop-blur-sm transition hover:bg-[var(--navy)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:h-11 sm:w-11"
+            className="absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/80 bg-white/75 text-[var(--navy)] shadow-md backdrop-blur-md transition hover:border-[var(--teal)] hover:bg-[var(--teal)] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--teal)] focus-visible:ring-offset-1 sm:left-3"
             aria-label="Önceki banner"
           >
-            <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
+            <ChevronLeft className="h-3.5 w-3.5" strokeWidth={2.25} />
           </button>
           <button
             type="button"
             onClick={scrollNext}
-            className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-xl border border-white/50 bg-[var(--navy)]/70 text-white shadow-[var(--shadow-floating)] backdrop-blur-sm transition hover:bg-[var(--navy)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:h-11 sm:w-11"
+            className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/80 bg-white/75 text-[var(--navy)] shadow-md backdrop-blur-md transition hover:border-[var(--teal)] hover:bg-[var(--teal)] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--teal)] focus-visible:ring-offset-1 sm:right-3"
             aria-label="Sonraki banner"
           >
-            <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
+            <ChevronRight className="h-3.5 w-3.5" strokeWidth={2.25} />
           </button>
           <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5 rounded-full bg-[var(--navy)]/55 px-2.5 py-2 shadow-sm backdrop-blur-sm sm:bottom-4">
             {items.map((item, i) => (

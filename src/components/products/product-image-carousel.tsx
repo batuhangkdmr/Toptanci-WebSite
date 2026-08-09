@@ -94,17 +94,17 @@ export function ProductImageCarousel({
             type="button"
             aria-label="Önceki görsel"
             onClick={goPrev}
-            className="absolute left-1 top-1/2 z-20 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md border border-white/70 bg-[var(--navy)]/70 text-white opacity-90 shadow-md backdrop-blur-sm transition hover:bg-[var(--navy)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] lg:left-2 lg:h-9 lg:w-9 lg:rounded-lg"
+            className="absolute left-1 top-1/2 z-20 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--border-soft)] bg-white/80 text-[var(--navy)] shadow-sm backdrop-blur-sm transition hover:border-[var(--teal)] hover:bg-[var(--teal)] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] lg:left-2"
           >
-            <ChevronLeft className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
+            <ChevronLeft className="h-3.5 w-3.5" strokeWidth={2.25} />
           </button>
           <button
             type="button"
             aria-label="Sonraki görsel"
             onClick={goNext}
-            className="absolute right-1 top-1/2 z-20 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md border border-white/70 bg-[var(--navy)]/70 text-white opacity-90 shadow-md backdrop-blur-sm transition hover:bg-[var(--navy)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] lg:right-2 lg:h-9 lg:w-9 lg:rounded-lg"
+            className="absolute right-1 top-1/2 z-20 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--border-soft)] bg-white/80 text-[var(--navy)] shadow-sm backdrop-blur-sm transition hover:border-[var(--teal)] hover:bg-[var(--teal)] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] lg:right-2"
           >
-            <ChevronRight className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
+            <ChevronRight className="h-3.5 w-3.5" strokeWidth={2.25} />
           </button>
           <div className="pointer-events-none absolute bottom-1.5 left-0 right-0 z-10 flex justify-center gap-1 lg:bottom-2">
             {orderedImages.map((image) => (

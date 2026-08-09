@@ -140,12 +140,13 @@ export function AutoCategoryCarousel({ categories, className }: Props) {
           className={cn(
             "flex gap-2.5 sm:gap-3",
             shouldAnimate && "w-max",
-            shouldAnimate && !paused && "animate-auto-category-marquee",
+            shouldAnimate && "animate-auto-category-marquee",
           )}
           style={
             shouldAnimate
               ? ({
                   ["--auto-category-duration" as string]: `${timings.loopDurationMs}ms`,
+                  animationPlayState: paused ? "paused" : "running",
                 } as React.CSSProperties)
               : undefined
           }
