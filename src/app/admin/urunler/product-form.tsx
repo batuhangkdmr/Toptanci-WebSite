@@ -367,7 +367,8 @@ export function ProductForm({ categories, product }: ProductFormProps) {
             <p className="mt-1 text-sm text-[var(--muted-foreground)]">
               Birden fazla görsel ekleyebilirsiniz. Görseller tarayıcıda WebP’ye
               sıkıştırılıp Cloudinary’ye paralel yüklenir. “Kartta göster” ile ilk
-              sıradaki görseli seçin.
+              sıradaki görseli seçin. Önerilen ölçü: 1200 × 1200 px (1:1).
+              Bütün ürün görsellerini aynı ölçü ve oranda hazırlayın.
             </p>
           </div>
 

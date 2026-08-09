@@ -313,7 +313,16 @@ export function CategoriesClient({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="categoryImage">Kategori görseli</Label>
+          <Label htmlFor="categoryImage">
+            Kategori görseli
+            <span className="ml-2 font-normal text-[var(--primary)]">
+              800 × 800 px
+            </span>
+          </Label>
+          <p className="text-xs text-[var(--muted-foreground)]">
+            Önerilen kare ölçü. Tüm kategori görsellerini aynı ölçü ve oranda
+            hazırlayın.
+          </p>
           <Input
             id="categoryImage"
             type="file"

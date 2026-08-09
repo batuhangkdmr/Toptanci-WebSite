@@ -35,14 +35,13 @@ export function ProductImageCarousel({
     dragFree: false,
   });
 
-  const width = size === "card" ? 400 : 800;
-  const height = size === "card" ? 300 : 600;
+  const width = size === "card" ? 480 : 960;
 
   if (orderedImages.length === 0) {
     return (
       <div
         className={cn(
-          "flex aspect-[4/3] w-full items-center justify-center bg-[var(--surface-subtle)] text-[var(--muted-foreground)]",
+          "flex aspect-square w-full items-center justify-center bg-[var(--surface-subtle)] text-[var(--muted-foreground)] lg:aspect-[4/3]",
           className,
         )}
       >
@@ -73,13 +72,13 @@ export function ProductImageCarousel({
         <div className="flex">
           {orderedImages.map((image) => (
             <div key={image.id} className="min-w-0 flex-[0_0_100%]">
-              <div className="relative aspect-[4/3] w-full bg-[linear-gradient(145deg,#ffffff_0%,#f3f7f9_100%)] p-3">
+              <div className="relative aspect-square w-full bg-[linear-gradient(145deg,#ffffff_0%,#f3f7f9_100%)] lg:aspect-[4/3]">
                 <Image
-                  src={getOptimizedImageUrl(image.secureUrl, { width, height })}
+                  src={getOptimizedImageUrl(image.secureUrl, { width })}
                   alt={productName}
                   fill
-                  className="pointer-events-none object-contain p-3 transition-transform duration-300 group-hover:scale-[1.025]"
-                  sizes={size === "card" ? "(max-width: 639px) 88vw, (max-width: 1023px) 46vw, (max-width: 1279px) 31vw, 24vw" : "100vw"}
+                  className="pointer-events-none object-contain p-1.5 transition-transform duration-300 group-hover:scale-[1.025] lg:p-3"
+                  sizes={size === "card" ? "(max-width: 374px) 50vw, (max-width: 767px) 33vw, (max-width: 1023px) 25vw, (max-width: 1279px) 25vw, 20vw" : "(max-width: 1023px) 100vw, 50vw"}
                   loading="lazy"
                   draggable={false}
                 />
@@ -95,19 +94,19 @@ export function ProductImageCarousel({
             type="button"
             aria-label="Önceki görsel"
             onClick={goPrev}
-            className="absolute left-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg border border-white/70 bg-[var(--navy)]/70 text-white opacity-90 shadow-md backdrop-blur-sm transition hover:bg-[var(--navy)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
+            className="absolute left-1 top-1/2 z-20 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md border border-white/70 bg-[var(--navy)]/70 text-white opacity-90 shadow-md backdrop-blur-sm transition hover:bg-[var(--navy)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] lg:left-2 lg:h-9 lg:w-9 lg:rounded-lg"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
           </button>
           <button
             type="button"
             aria-label="Sonraki görsel"
             onClick={goNext}
-            className="absolute right-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg border border-white/70 bg-[var(--navy)]/70 text-white opacity-90 shadow-md backdrop-blur-sm transition hover:bg-[var(--navy)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
+            className="absolute right-1 top-1/2 z-20 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md border border-white/70 bg-[var(--navy)]/70 text-white opacity-90 shadow-md backdrop-blur-sm transition hover:bg-[var(--navy)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] lg:right-2 lg:h-9 lg:w-9 lg:rounded-lg"
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
           </button>
-          <div className="pointer-events-none absolute bottom-2 left-0 right-0 z-10 flex justify-center gap-1">
+          <div className="pointer-events-none absolute bottom-1.5 left-0 right-0 z-10 flex justify-center gap-1 lg:bottom-2">
             {orderedImages.map((image) => (
               <span
                 key={image.id}

@@ -133,9 +133,7 @@ export async function findProductWithImagesBySlug(
   };
 }
 
-async function attachPrimaryImages(
-  products: Product[],
-): Promise<ProductWithImages[]> {
+async function attachImages(products: Product[]): Promise<ProductWithImages[]> {
   if (products.length === 0) return [];
   const pool = await getPool();
   const ids = products.map((p) => p.id);
@@ -148,21 +146,9 @@ async function attachPrimaryImages(
   });
 
   const result = await request.query<ImageRow>(`
-    SELECT
-      Id, ProductId, CloudinaryPublicId, SecureUrl,
-      Width, Height, Format, SortOrder, IsPrimary, CreatedAt
-    FROM (
-      SELECT
-        pi.*,
-        ROW_NUMBER() OVER (
-          PARTITION BY pi.ProductId
-          ORDER BY pi.IsPrimary DESC, pi.SortOrder ASC, pi.CreatedAt ASC, pi.Id ASC
-        ) AS ImageRank
-      FROM ProductImages pi
-      WHERE pi.ProductId IN (${placeholders.join(",")})
-    ) ranked
-    WHERE ImageRank = 1
-    ORDER BY ProductId ASC
+    SELECT * FROM ProductImages
+    WHERE ProductId IN (${placeholders.join(",")})
+    ORDER BY ProductId ASC, IsPrimary DESC, SortOrder ASC, CreatedAt ASC, Id ASC
   `);
 
   const byProduct = new Map<string, ProductImage[]>();
@@ -236,7 +222,7 @@ export async function listProducts(options?: {
     categoryName: row.CategoryName,
   }));
 
-  const withImages = await attachPrimaryImages(products);
+  const withImages = await attachImages(products);
 
   return {
     items: withImages.map((p, i) => ({
