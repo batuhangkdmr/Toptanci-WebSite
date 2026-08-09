@@ -1,0 +1,63 @@
+import { NextResponse } from "next/server";
+import { v2 as cloudinary } from "cloudinary";
+import { getCurrentUser } from "@/lib/auth/session";
+import { assertAdmin } from "@/lib/permissions";
+import { getHomepageFolder } from "@/lib/cloudinary";
+import { getSectionById } from "@/repositories/homepage-repository";
+import { guidSchema } from "@/lib/validation/schemas";
+import { z } from "zod";
+
+export async function POST(request: Request) {
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ error: "Oturum gerekli." }, { status: 401 });
+    }
+    assertAdmin(user);
+
+    const body = z.object({ sectionId: guidSchema }).parse(await request.json());
+    const section = await getSectionById(body.sectionId);
+    if (!section) {
+      return NextResponse.json({ error: "Bölüm bulunamadı." }, { status: 404 });
+    }
+
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
+    if (!cloudName || !apiKey || !apiSecret) {
+      return NextResponse.json(
+        { error: "Cloudinary yapılandırması eksik." },
+        { status: 500 },
+      );
+    }
+
+    cloudinary.config({
+      cloud_name: cloudName,
+      api_key: apiKey,
+      api_secret: apiSecret,
+      secure: true,
+    });
+
+    const timestamp = Math.round(Date.now() / 1000);
+    const folder = getHomepageFolder(body.sectionId);
+
+    const paramsToSign = { timestamp, folder };
+    const signature = cloudinary.utils.api_sign_request(
+      paramsToSign,
+      apiSecret,
+    );
+
+    return NextResponse.json({
+      cloudName,
+      apiKey,
+      timestamp,
+      signature,
+      folder,
+    });
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "İmza oluşturulamadı.";
+    return NextResponse.json({ error: message }, { status: 400 });
+  }
+}
