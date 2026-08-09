@@ -39,7 +39,10 @@ interface PageProps {
 export default async function HomePage({ searchParams }: PageProps) {
   const user = await getCurrentUser();
   const params = await searchParams;
-  const page = Math.max(1, Number(params.page) || 1);
+  const requestedPage = Number(params.page);
+  const page = Number.isFinite(requestedPage)
+    ? Math.max(1, Math.floor(requestedPage))
+    : 1;
   const search = params.q?.trim() || undefined;
   const kategoriParam = params.kategori?.trim() || undefined;
 
@@ -60,14 +63,14 @@ export default async function HomePage({ searchParams }: PageProps) {
         categoryId,
         activeOnly: true,
         page,
-        pageSize: 12,
+        pageSize: 24,
       }),
       getHomepageForPublic().catch(() => [] as PublicHomepageSection[]),
       approved && user ? getMyCartCount(user) : Promise.resolve(0),
       listHomepageCategories().catch(() => []),
     ]);
 
-  const totalPages = Math.max(1, Math.ceil(result.total / 12));
+  const totalPages = result.totalPages;
 
   const autoCategorySection = sections.find(
     (s) => s.sectionType === "AUTO_CATEGORY_CAROUSEL",
@@ -246,15 +249,20 @@ export default async function HomePage({ searchParams }: PageProps) {
                 <p className="mt-1 text-sm text-[var(--muted-foreground)]">Arama veya kategori seçiminizi değiştirmeyi deneyin.</p>
               </div>
             ) : (
-              <div className="grid gap-4 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:grid-cols-4">
+              <div className="grid grid-cols-2 gap-2 min-[375px]:grid-cols-3 sm:gap-3 md:grid-cols-3 lg:grid-cols-4 lg:gap-4 xl:grid-cols-4 2xl:grid-cols-5">
                 {result.items.map((product) => (
-                  <ProductCard key={product.id} product={product} canOrder={canOrder} />
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    canOrder={canOrder}
+                    variant="catalog"
+                  />
                 ))}
               </div>
             )}
 
             <Pagination
-              page={page}
+              page={result.page}
               totalPages={totalPages}
               basePath="/"
               searchParams={{ q: search, kategori: kategoriParam }}

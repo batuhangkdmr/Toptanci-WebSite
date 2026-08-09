@@ -114,9 +114,9 @@ export function ProductRailCarousel({
           {products.map((product) => (
             <div
               key={product.id}
-              className="min-w-0 flex-[0_0_84%] min-[420px]:flex-[0_0_72%] sm:flex-[0_0_46%] md:flex-[0_0_31%] lg:flex-[0_0_24%]"
+              className="min-w-0 flex-[0_0_48%] min-[375px]:flex-[0_0_31%] sm:flex-[0_0_31%] md:flex-[0_0_23.5%] lg:flex-[0_0_23%] xl:flex-[0_0_19%]"
             >
-              <ProductCard product={product} canOrder={canOrder} />
+              <ProductCard product={product} canOrder={canOrder} variant="featured" />
             </div>
           ))}
         </div>

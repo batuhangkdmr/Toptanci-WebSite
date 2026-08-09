@@ -1,6 +1,11 @@
 import "server-only";
 import { getPool, sql } from "@/lib/db/pool";
-import type { Product, ProductImage, ProductWithImages } from "@/types";
+import type {
+  PaginatedResult,
+  Product,
+  ProductImage,
+  ProductWithImages,
+} from "@/types";
 
 type ProductRow = {
   Id: string;
@@ -128,7 +133,9 @@ export async function findProductWithImagesBySlug(
   };
 }
 
-async function attachImages(products: Product[]): Promise<ProductWithImages[]> {
+async function attachPrimaryImages(
+  products: Product[],
+): Promise<ProductWithImages[]> {
   if (products.length === 0) return [];
   const pool = await getPool();
   const ids = products.map((p) => p.id);
@@ -141,9 +148,21 @@ async function attachImages(products: Product[]): Promise<ProductWithImages[]> {
   });
 
   const result = await request.query<ImageRow>(`
-    SELECT * FROM ProductImages
-    WHERE ProductId IN (${placeholders.join(",")})
-    ORDER BY IsPrimary DESC, SortOrder ASC, CreatedAt ASC
+    SELECT
+      Id, ProductId, CloudinaryPublicId, SecureUrl,
+      Width, Height, Format, SortOrder, IsPrimary, CreatedAt
+    FROM (
+      SELECT
+        pi.*,
+        ROW_NUMBER() OVER (
+          PARTITION BY pi.ProductId
+          ORDER BY pi.IsPrimary DESC, pi.SortOrder ASC, pi.CreatedAt ASC, pi.Id ASC
+        ) AS ImageRank
+      FROM ProductImages pi
+      WHERE pi.ProductId IN (${placeholders.join(",")})
+    ) ranked
+    WHERE ImageRank = 1
+    ORDER BY ProductId ASC
   `);
 
   const byProduct = new Map<string, ProductImage[]>();
@@ -166,10 +185,15 @@ export async function listProducts(options?: {
   activeOnly?: boolean;
   page?: number;
   pageSize?: number;
-}): Promise<{ items: ProductWithImages[]; total: number }> {
-  const page = options?.page ?? 1;
-  const pageSize = options?.pageSize ?? 12;
-  const offset = (page - 1) * pageSize;
+}): Promise<PaginatedResult<ProductWithImages>> {
+  const requestedPage =
+    typeof options?.page === "number" && Number.isFinite(options.page)
+      ? Math.max(1, Math.floor(options.page))
+      : 1;
+  const pageSize =
+    typeof options?.pageSize === "number" && Number.isFinite(options.pageSize)
+      ? Math.min(100, Math.max(1, Math.floor(options.pageSize)))
+      : 24;
   const pool = await getPool();
 
   const where: string[] = [];
@@ -186,6 +210,10 @@ export async function listProducts(options?: {
   const countResult = await countReq.query<{ total: number }>(
     `SELECT COUNT(*) AS total FROM Products p ${whereSql}`,
   );
+  const total = countResult.recordset[0]?.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const page = Math.min(requestedPage, totalPages);
+  const offset = (page - 1) * pageSize;
 
   const listReq = pool
     .request()
@@ -199,7 +227,7 @@ export async function listProducts(options?: {
     FROM Products p
     LEFT JOIN Categories c ON c.Id = p.CategoryId
     ${whereSql}
-    ORDER BY p.Name ASC
+    ORDER BY p.Name ASC, p.Id ASC
     OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY
   `);
 
@@ -208,14 +236,17 @@ export async function listProducts(options?: {
     categoryName: row.CategoryName,
   }));
 
-  const withImages = await attachImages(products);
+  const withImages = await attachPrimaryImages(products);
 
   return {
     items: withImages.map((p, i) => ({
       ...p,
       categoryName: products[i].categoryName,
     })),
-    total: countResult.recordset[0]?.total ?? 0,
+    total,
+    page,
+    pageSize,
+    totalPages,
   };
 }
 
